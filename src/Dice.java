@@ -4,6 +4,7 @@ public class Dice {
 	private int number = 1;
 
 	public Dice(){
+		
 	}
 
 	public void Roll(){

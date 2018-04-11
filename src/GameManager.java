@@ -7,7 +7,17 @@ public class GameManager {
 	private Dice diceTwo = new Dice();
 	private boolean diceOneEqualDiceTwo;
 	
-	private List<Stone> stoneList = new ArrayList<Stone>();
+	// Chaque joueur possède 15 Stones
+	private Player player1, player2;
+	
+	private Board board;
+	
+	public GameManager() {
+		player1 = new Player("Rouge");
+		player2 = new Player("Blanc");
+		
+		board = new Board(player1, player2);
+	}
 	
 	public void RollDices() {
 		diceOne.Roll();
@@ -34,13 +44,14 @@ public class GameManager {
 	public void setDiceTwo(Dice diceTwo) {
 		this.diceTwo = diceTwo;
 	}
-
-	public List<Stone> getStoneList() {
-		return stoneList;
-	}
-
-	public void setStoneList(List<Stone> stoneList) {
-		this.stoneList = stoneList;
-	}
 	
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+
 }

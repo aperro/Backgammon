@@ -1,27 +1,19 @@
+import java.awt.Point;
 
 public class Stone {
-	public enum Color {
-		WHITE,
-		BLACK,
-		NONE
-	}
-	public static Stone WHITE = new Stone(Color.WHITE);
-	public static Stone BLACK = new Stone(Color.BLACK);
-	public static Stone NONE = new Stone(Color.NONE);
 	
-	private Color color;
+	private static final int stoneWidth = 50;
+	private static final int stoneHeight = 50;
 	
+	private String name;
 	
-	public Stone(Color color) {
-		this.color = color;
+	private Boolean isPlayable_;
+	private Boolean isSelected_;
+	
+	public Stone(String name, Boolean isPlayable, Boolean isSelected) {
+		this.name = name;
+		this.isPlayable_ = isPlayable;
+		this.isSelected_ = isSelected;
 	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
+	
 }
