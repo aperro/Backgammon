@@ -15,6 +15,7 @@ public class Box {
 	
 	private Boolean boxSelected;
 	private Boolean isAPossibleMove;
+	private Boolean isTop;
 
 	private List<Stone> StonesInside = new ArrayList<Stone>();
 
@@ -23,21 +24,29 @@ public class Box {
 		this.isEmpty = true;
 		this.currentNumberOfStones = 0;
 		this.boxSelected = false;
+		this.isAPossibleMove = false;
+		
+		if(this.getIndexBox() < 13) {
+			this.setIsTop(true);
+		}else {
+			this.setIsTop(false);
+		}
+		
 		
 		GeneratePositionThisBox();
 	}
 
-	public void PileStone(Stone newStone, String player) {
-		this.StonesInside.add(newStone);
+	public void PileStone(String player) {
+		this.StonesInside.add(new Stone(player, false, false));
 		owner = player;
 		// TO-DO Placer les pions dans les box
 		this.currentNumberOfStones++;
 		this.isEmpty = false;
 		
-		if(indexBox >= 1 && indexBox <= 12) {
+		if(this.getIsTop()) {
 			this.boxEndPosition.y = boxEndPosition.y + stepBetweenBox;
 		}
-		if(indexBox >= 13 && indexBox <= 24) {
+		if(!this.getIsTop()) {
 			this.boxEndPosition.y = boxEndPosition.y - stepBetweenBox;
 		}
 	}
@@ -91,7 +100,7 @@ public class Box {
 		}
 	}
 
-	public void DepileStone(Stone oldStone) {
+	public void DepileStone() {
 		Stone lastStone = StonesInside.get(StonesInside.size()-1);
 		// TO-DO
 
@@ -166,6 +175,14 @@ public class Box {
 
 	public void setIsAPossibleMove(Boolean isAPossibleMove) {
 		this.isAPossibleMove = isAPossibleMove;
+	}
+
+	public Boolean getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(Boolean isTop) {
+		this.isTop = isTop;
 	}
 
 }

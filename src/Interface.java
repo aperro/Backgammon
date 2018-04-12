@@ -28,7 +28,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private JLabel redStoneLabel = new JLabel();
 	private JLabel whiteStoneLabel = new JLabel();
 	private JLabel selectedStoneLabel = new JLabel();
-	
+
 	private JLabel validateBoxLabel = new JLabel();
 
 	// Les images du bouton et des diffèrentes faces des dés
@@ -43,7 +43,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private BufferedImage redStoneImage;
 	private BufferedImage whiteStoneImage;
 	private BufferedImage stoneSelectedImage;
-	
+
 	private BufferedImage validateBoxTopImage;
 	private BufferedImage validateBoxBotImage;
 
@@ -55,7 +55,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 	GameManager gameManager_;
 	private Boolean OneStoneIsSelected = false;
-	
+
 	// Test 
 	int dice1 = 1;
 	int dice2 = 5;
@@ -84,7 +84,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		URL urlRedStone = getClass().getResource("RedStone.png");
 		URL urlWhiteStone = getClass().getResource("WhiteStone.png");
 		URL urlSelectedStone = getClass().getResource("StoneSelected.png");
-		
+
 		URL urlSelectedBoxTop = getClass().getResource("ValidateBoxTop.png");
 		URL urlSelectedBoxBot = getClass().getResource("ValidateBoxBot.png");
 
@@ -193,7 +193,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Get BoxSelected Image
 		File fileSelectedBoxTop = new File(urlSelectedBoxTop.getPath());
 		validateBoxTopImage = null;
@@ -203,7 +203,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		File fileSelectedBoxBot = new File(urlSelectedBoxBot.getPath());
 		validateBoxBotImage = null;
 		try {
@@ -311,10 +311,10 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		backgroundImage = new JLabel(new ImageIcon(bg));
 		backgroundImage.setBounds(0, 0, width, heigth);
 		lp.add(backgroundImage, new Integer(1));
-		
-		validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
+
+		/*validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
 		validateBoxLabel.setBounds(500, 500, 68, 381);
-		lp.add(validateBoxLabel, new Integer(2));
+		lp.add(validateBoxLabel, new Integer(2));*/
 
 		rollDice.setBounds(430, 405, 130, 130);
 		lp.add(rollDice, new Integer(2));
@@ -323,12 +323,12 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		ShowStones();
 
 		if(OneStoneIsSelected) {
+			System.out.print("ici");
 			ShowPossibleMove();
 		}
-		
+
 		lp.repaint();
 	}
-
 
 	private void ShowStones() {
 		// TODO Auto-generated method stub
@@ -348,8 +348,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
 							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
-						
-						if(currentBox.getIndexBox() < 13) {
+
+						if(currentBox.getIsTop()) {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 40*j, 50, 50);
@@ -366,8 +366,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
 							whiteStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
-						
-						if(currentBox.getIndexBox() < 13) {
+
+						if(currentBox.getIsTop()) {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 40*j, 50, 50);
@@ -382,12 +382,20 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private void ShowPossibleMove() {
 		// TODO Auto-generated method stub
 		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
-				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-				
-				/*if(currentBox.getIsAPossibleMove()) {
 
-				}*/
+			Box currentBox = gameManager_.getBoard().getBoxList().get(i);
+
+			if(currentBox.getIsAPossibleMove()) {
+				System.out.print("Je passe ici");
+				if(currentBox.getIsTop()) {
+					validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
+					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 381);
+					lp.add(validateBoxLabel, new Integer(2));
+				}else {
+					validateBoxLabel = new JLabel(new ImageIcon(validateBoxBotImage));
+					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y - 330, 68, 381);
+					lp.add(validateBoxLabel, new Integer(2));
+				}
 			}
 		}
 	}
@@ -399,38 +407,84 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		int y = e.getY() - 40;
 		System.out.println(x + " ; " + y + " \n ");
 
-
+		// Check if something is selected
+		int notInBox = 0;
+		int BoxNotEmpty = 0;
 		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
-				// case non vide
-				if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
-					Box currentBox = gameManager_.getBoard().getBoxList().get(i);
+			// case non vide
+			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty() || OneStoneIsSelected) {
+				BoxNotEmpty++;
+				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
 
-					System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
-					// On est dans la partie haut du terrain
-					if(currentBox.getIndexBox() <= 12) {
-						if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
+				System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
+				// On est dans la partie haut du terrain
+				if(currentBox.getIsTop()) {
+					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
+
+						// Le box cliqué est-il un box ou le joueur peut poser sa stone?
+						if(currentBox.getIsAPossibleMove() && OneStoneIsSelected) {
+							System.out.print("Hi");
+							int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
+							// faire un if
+							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, currentBox.getOwner());
+						}
+						else {
 							gameManager_.getBoard().BoxSelected(i);
 							OneStoneIsSelected = true;
-							
+							System.out.print("Selectionné");
 							// Test
 							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
 						}
+
 					}
-					// On est dans la partie basse du terrain
 					else {
-						if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y <= currentBox.getBoxStartPosition().y && y >= currentBox.getBoxEndPosition().y) {
-							gameManager_.getBoard().BoxSelected(i);
-							OneStoneIsSelected = true;
-							
-							// Test
-							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
-						}
+						notInBox++;
+					}
+				}
+				// On est dans la partie basse du terrain
+				else {
+					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y <= currentBox.getBoxStartPosition().y && y >= currentBox.getBoxEndPosition().y) {
+						gameManager_.getBoard().BoxSelected(i);
+						OneStoneIsSelected = true;
+						System.out.print("Selectionné");
+						// Test
+						gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
+					}else {
+						notInBox++;
 					}
 				}
 			}
 		}
-		System.out.print("Selectionné");
+		if(notInBox == BoxNotEmpty) {
+			OneStoneIsSelected = false;
+			gameManager_.getBoard().DesactiveAllSelected();
+		}
+
+		// Check if a stone move
+		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
+			// case non vide
+			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty() || OneStoneIsSelected) {
+				BoxNotEmpty++;
+				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
+
+				System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
+				// On est dans la partie haut du terrain
+				if(currentBox.getIsTop()) {
+					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
+
+						// Le box cliqué est-il un box ou le joueur peut poser sa stone?
+						if(currentBox.getIsAPossibleMove() && OneStoneIsSelected) {
+							System.out.print("Hi");
+							int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
+							// faire un if
+							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, currentBox.getOwner());
+						}
+					}
+
+				}
+			}
+		}
+
 		Show();
 	}
 
