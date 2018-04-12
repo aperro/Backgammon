@@ -384,14 +384,15 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
 
 			Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-
+			
 			if(currentBox.getIsAPossibleMove()) {
-				System.out.print("Je passe ici");
+
 				if(currentBox.getIsTop()) {
 					validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
 					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 381);
 					lp.add(validateBoxLabel, new Integer(2));
-				}else {
+				}else
+				{
 					validateBoxLabel = new JLabel(new ImageIcon(validateBoxBotImage));
 					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y - 330, 68, 381);
 					lp.add(validateBoxLabel, new Integer(2));
@@ -411,31 +412,35 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		int notInBox = 0;
 		int BoxNotEmpty = 0;
 		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			// case non vide
+			// case non vide OU une pièce selectionnée
 			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty() || OneStoneIsSelected) {
 				BoxNotEmpty++;
 				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-
+				
 				System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
+				
 				// On est dans la partie haut du terrain
 				if(currentBox.getIsTop()) {
 					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
-
-						// Le box cliqué est-il un box ou le joueur peut poser sa stone?
-						if(currentBox.getIsAPossibleMove() && OneStoneIsSelected) {
-							System.out.print("Hi");
-							int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
-							// faire un if
-							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, currentBox.getOwner());
-						}
-						else {
+						// La case cliquée est-t-elle vide ? Si oui alors nouvelle selection
+						if(!currentBox.getIsEmpty() && !currentBox.getIsAPossibleMove()) {
 							gameManager_.getBoard().BoxSelected(i);
 							OneStoneIsSelected = true;
 							System.out.print("Selectionné");
-							// Test
+							// On affiche les mouvements possibles
 							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
 						}
-
+						
+						int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
+						Box oldBox = gameManager_.getBoard().getBoxList().get(oldIndex);
+						// La case cliqué est-il une case où le joueur peut poser sa stone? Si oui alors on change la stone de place
+						if(oldIndex != 0 &&(currentBox.getIsEmpty() || oldBox.getOwner() == currentBox.getOwner()) && currentBox.getIsAPossibleMove()) {
+							System.out.print("Hi");
+							// faire un if
+							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, oldBox.getOwner());
+							gameManager_.getBoard().DesactiveAllSelected();
+							OneStoneIsSelected = false;
+						}
 					}
 					else {
 						notInBox++;
@@ -444,11 +449,25 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 				// On est dans la partie basse du terrain
 				else {
 					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y <= currentBox.getBoxStartPosition().y && y >= currentBox.getBoxEndPosition().y) {
-						gameManager_.getBoard().BoxSelected(i);
-						OneStoneIsSelected = true;
-						System.out.print("Selectionné");
-						// Test
-						gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
+						// La case cliquée est-t-elle vide ? Si oui alors nouvelle selection
+						if(!currentBox.getIsEmpty() && !currentBox.getIsAPossibleMove()) {
+							gameManager_.getBoard().BoxSelected(i);
+							OneStoneIsSelected = true;
+							System.out.print("Selectionné");
+							// On affiche les mouvements possibles
+							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
+						}
+						
+						int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
+						Box oldBox = gameManager_.getBoard().getBoxList().get(oldIndex);
+						// La case cliqué est-il une case où le joueur peut poser sa stone? Si oui alors on change la stone de place
+						if(oldIndex != 0 &&(currentBox.getIsEmpty() || oldBox.getOwner() == currentBox.getOwner()) && currentBox.getIsAPossibleMove()) {
+							System.out.print("Hi");
+							// faire un if
+							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, oldBox.getOwner());
+							gameManager_.getBoard().DesactiveAllSelected();
+							OneStoneIsSelected = false;
+						}
 					}else {
 						notInBox++;
 					}
@@ -459,32 +478,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			OneStoneIsSelected = false;
 			gameManager_.getBoard().DesactiveAllSelected();
 		}
-
-		// Check if a stone move
-		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			// case non vide
-			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty() || OneStoneIsSelected) {
-				BoxNotEmpty++;
-				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-
-				System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
-				// On est dans la partie haut du terrain
-				if(currentBox.getIsTop()) {
-					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
-
-						// Le box cliqué est-il un box ou le joueur peut poser sa stone?
-						if(currentBox.getIsAPossibleMove() && OneStoneIsSelected) {
-							System.out.print("Hi");
-							int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
-							// faire un if
-							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, currentBox.getOwner());
-						}
-					}
-
-				}
-			}
-		}
-
 		Show();
 	}
 

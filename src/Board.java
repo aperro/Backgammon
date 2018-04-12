@@ -5,41 +5,47 @@ public class Board {
 	// Le plateau possède 26 cases différentes avec leur place respective
 	private List<Box> boxList = new ArrayList<Box>();
 	
+	// Cette méthode change de place une stone
 	public void ChangeStoneFromABoxToAnother(int indexNewBox, int indexOldBox, String owner) {
 		// Depile one stone from the odlIndexBox
 		Box currentBox = boxList.get(indexOldBox);
 		currentBox.DepileStone();
 		
 		// Pile one stone on the indexNewBox
-		currentBox = boxList.get(indexNewBox);
-		currentBox.PileStone(owner);
+		Box newBox = boxList.get(indexNewBox);
+		newBox.PileStone(owner);
+		newBox.setIsAPossibleMove(false);
 	}
 	
-	public void PossibleMove(int indexBoxSelected, int dice1_Score, int dice2_Score, Boolean diceOneEqualDiceTwo) {
+	// Cette méthode regarde par rapport au score des dés quelles sont les positions atteignables
+	public void PossibleMove(int indexBoxSelected, int dice1_Score, int dice2_Score, Boolean dice1_Equal_Dice2) {
 		// On reset les possible move bool de toutes les cases
 		DesactiveAllPossibleMove();
 		// Si les dés ne sont pas égaux
-		if(!diceOneEqualDiceTwo) {
+		if(!dice1_Equal_Dice2) {
 			// On regarde si la stone a bouger est celle du joueur 1
-			if(boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Rouge") || boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Blanc") ) {
+			if(boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Rouge")) {
 				// On va dans le sens 1-25
 				// Premier dé
-				if((indexBoxSelected + dice1_Score) <= 24) {
+				if(((indexBoxSelected + dice1_Score) <= 24) && !boxList.get(indexBoxSelected+ dice1_Score).getOwner().equalsIgnoreCase("Blanc")) {
 					boxList.get((indexBoxSelected + dice1_Score)).setIsAPossibleMove(true);
 				}
 				// Deuxième dé
-				if((indexBoxSelected + dice2_Score) <= 24) {
+				if((indexBoxSelected + dice2_Score) <= 24 && !boxList.get(indexBoxSelected+ dice2_Score).getOwner().equalsIgnoreCase("Blanc")) {
 					boxList.get((indexBoxSelected + dice2_Score)).setIsAPossibleMove(true);
-				}
-				// Les deux dés
-				if((indexBoxSelected + dice1_Score + dice2_Score) <= 24) {
-					boxList.get((indexBoxSelected + dice1_Score + dice2_Score)).setIsAPossibleMove(true);
 				}
 			}
 			
 			if(boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Blanc")) {
 				// On va dans le sens 25-1
-				
+				// Premier dé
+				if((indexBoxSelected - dice1_Score)  >= 1 && !boxList.get(indexBoxSelected - dice1_Score).getOwner().equalsIgnoreCase("Rouge")) {
+					boxList.get((indexBoxSelected - dice1_Score)).setIsAPossibleMove(true);
+				}
+				// Deuxième dé
+				if((indexBoxSelected - dice2_Score)  >= 1 && !boxList.get(indexBoxSelected - dice2_Score).getOwner().equalsIgnoreCase("Rouge")){
+					boxList.get((indexBoxSelected - dice2_Score)).setIsAPossibleMove(true);
+				}
 			}
 		}
 	}

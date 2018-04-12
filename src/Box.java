@@ -25,34 +25,52 @@ public class Box {
 		this.currentNumberOfStones = 0;
 		this.boxSelected = false;
 		this.isAPossibleMove = false;
+		this.owner = "Nobody";
 		
+		// Savoir si box du haut ou du bas
 		if(this.getIndexBox() < 13) {
 			this.setIsTop(true);
 		}else {
 			this.setIsTop(false);
 		}
 		
-		
 		GeneratePositionThisBox();
 	}
 
+	public void DepileStone() {
+		if(this.currentNumberOfStones > 0) {
+			StonesInside.remove(StonesInside.size()-1);
+			this.currentNumberOfStones--;
+		}
+		if(this.currentNumberOfStones == 0) {
+			this.isEmpty = true;
+		}
+	}
+	
 	public void PileStone(String player) {
 		this.StonesInside.add(new Stone(player, false, false));
-		owner = player;
+		this.owner = player;
 		// TO-DO Placer les pions dans les box
 		this.currentNumberOfStones++;
-		this.isEmpty = false;
 		
-		if(this.getIsTop()) {
-			this.boxEndPosition.y = boxEndPosition.y + stepBetweenBox;
+		// First Stone
+		if(isEmpty == true) {
+			if(getIsTop()) {
+				this.boxEndPosition.y = boxStartPosition.y + 300;
+			}
+			if(!getIsTop()) {
+				this.boxEndPosition.y = boxStartPosition.y - 300;
+			}
+			isEmpty = false;
 		}
-		if(!this.getIsTop()) {
-			this.boxEndPosition.y = boxEndPosition.y - stepBetweenBox;
-		}
+		this.currentNumberOfStones++;
 	}
 
 	private void GeneratePositionThisBox() {
 		// TODO Auto-generated method stub
+		
+		// Pour l'affichage seulement
+		
 		int tableCoin = 0;
 		if(indexBox > 0 && indexBox <= 6) {
 			tableCoin = 1;
@@ -71,41 +89,33 @@ public class Box {
 		case 1: tableCoin = 1; // En haut à droite
 		boxStartPosition.x = 900 - ( indexBox -1) *66;
 		boxStartPosition.y = 35;
+		
 		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y + 200;
 		break;
 		
 		case 2: tableCoin = 2; // En haut à droite
 		boxStartPosition.x = 40 + (12 - indexBox) *66;
 		boxStartPosition.y = 35;
 		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y + 200;
 		break;
 
 		case 3: tableCoin = 3; // En bas à gauche
 		boxStartPosition.x = 40 + (indexBox -13) *66;
 		boxStartPosition.y = 840;
 		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y - stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y - 200;
 		break;
 		
 		case 4: tableCoin = 4; // En bas à droite
 		boxStartPosition.x = 900 - (24 - indexBox) *66;
 		boxStartPosition.y = 840;
 		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y - stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y - 200;
 		break;
 		default: System.out.print("Bug");
 		break;
-		}
-	}
-
-	public void DepileStone() {
-		Stone lastStone = StonesInside.get(StonesInside.size()-1);
-		// TO-DO
-
-		if(this.currentNumberOfStones == 0) {
-			this.isEmpty = true;
 		}
 	}
 
