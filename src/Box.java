@@ -10,6 +10,11 @@ public class Box {
 	private String owner;
 	private Boolean isEmpty;
 	private int currentNumberOfStones;
+	
+	private static final int stepBetweenBox = 40;
+	
+	private Boolean boxSelected;
+	private Boolean isAPossibleMove;
 
 	private List<Stone> StonesInside = new ArrayList<Stone>();
 
@@ -17,6 +22,8 @@ public class Box {
 		this.indexBox = indexBox;
 		this.isEmpty = true;
 		this.currentNumberOfStones = 0;
+		this.boxSelected = false;
+		
 		GeneratePositionThisBox();
 	}
 
@@ -26,6 +33,13 @@ public class Box {
 		// TO-DO Placer les pions dans les box
 		this.currentNumberOfStones++;
 		this.isEmpty = false;
+		
+		if(indexBox >= 1 && indexBox <= 12) {
+			this.boxEndPosition.y = boxEndPosition.y + stepBetweenBox;
+		}
+		if(indexBox >= 13 && indexBox <= 24) {
+			this.boxEndPosition.y = boxEndPosition.y - stepBetweenBox;
+		}
 	}
 
 	private void GeneratePositionThisBox() {
@@ -48,23 +62,30 @@ public class Box {
 		case 1: tableCoin = 1; // En haut à droite
 		boxStartPosition.x = 900 - ( indexBox -1) *66;
 		boxStartPosition.y = 35;
+		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y + stepBetweenBox;
 		break;
 		
 		case 2: tableCoin = 2; // En haut à droite
 		boxStartPosition.x = 40 + (12 - indexBox) *66;
 		boxStartPosition.y = 35;
+		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y + stepBetweenBox;
 		break;
 
 		case 3: tableCoin = 3; // En bas à gauche
 		boxStartPosition.x = 40 + (indexBox -13) *66;
 		boxStartPosition.y = 840;
+		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y - stepBetweenBox;
 		break;
 		
 		case 4: tableCoin = 4; // En bas à droite
 		boxStartPosition.x = 900 - (24 - indexBox) *66;
 		boxStartPosition.y = 840;
+		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
+		boxEndPosition.y = boxStartPosition.y - stepBetweenBox;
 		break;
-		
 		default: System.out.print("Bug");
 		break;
 		}
@@ -129,6 +150,22 @@ public class Box {
 
 	public Box(List<Stone> StonesInside){
 		this.StonesInside = StonesInside;
+	}
+
+	public Boolean getBoxSelected() {
+		return boxSelected;
+	}
+
+	public void setBoxSelected(Boolean boxSelected) {
+		this.boxSelected = boxSelected;
+	}
+
+	public Boolean getIsAPossibleMove() {
+		return isAPossibleMove;
+	}
+
+	public void setIsAPossibleMove(Boolean isAPossibleMove) {
+		this.isAPossibleMove = isAPossibleMove;
 	}
 
 }

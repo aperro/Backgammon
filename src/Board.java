@@ -2,10 +2,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-	// public int[] board = new int [26]; // 24 cases, 0 et 25 seront les buts
-
 	// Le plateau possède 26 cases différentes avec leur place respective
 	private List<Box> boxList = new ArrayList<Box>();
+	
+	public void ChangeStoneFromABoxToAnother(int indexNewBox) {
+		
+	}
+	
+	// On peut ajouter un paramètre string owner
+	public void PossibleMove(int indexBoxSelected, int dice1_Score, int dice2_Score, Boolean diceOneEqualDiceTwo) {
+		// Si les dés ne sont pas égaux
+		if(!diceOneEqualDiceTwo) {
+			// On regarde si la stone a bouger est celle du joueur 1
+			if(boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Rouge")) {
+				// On va dans le sens 1-25
+				DesactiveAllPossibleMove();
+				// Premier dé
+				if((indexBoxSelected + dice1_Score) <= 24) {
+					boxList.get((indexBoxSelected + dice1_Score)).setIsAPossibleMove(true);
+				}
+				// Deuxième dé
+				if((indexBoxSelected + dice2_Score) <= 24) {
+					boxList.get((indexBoxSelected + dice2_Score)).setIsAPossibleMove(true);
+				}
+				// Les deux dés
+				if((indexBoxSelected + dice1_Score + dice2_Score) <= 24) {
+					boxList.get((indexBoxSelected + dice1_Score + dice2_Score)).setIsAPossibleMove(true);
+				}
+			}
+			
+			if(boxList.get(indexBoxSelected).getOwner().equalsIgnoreCase("Blanc")) {
+				// On va dans le sens 25-1
+				
+			}
+		}
+	}
+	
+	private void DesactiveAllPossibleMove() {
+		// TODO Auto-generated method stub
+		for(int i=0; i < boxList.size(); i++) {
+			Box currentBox = boxList.get(i);
+			currentBox.setIsAPossibleMove(false);
+		}
+	}
+	
+	private void DesactiveAllSelected() {
+		// TODO Auto-generated method stub
+		for(int i=0; i < boxList.size(); i++) {
+			Box currentBox = boxList.get(i);
+			currentBox.setBoxSelected(false);
+		}
+	}
+
+	public Boolean CheckIsEmpty(int indexBox) {
+		return boxList.get(indexBox).getIsEmpty();
+	}
+	
+	public void BoxSelected(int indexBoxSelected) {
+		for(int i=0; i < boxList.size(); i++) {
+			Box currentBox = boxList.get(i);
+			currentBox.setBoxSelected(false);
+			if(currentBox.getIndexBox() == indexBoxSelected) {
+				currentBox.setBoxSelected(true);
+			}
+		}
+	}
 
 	public Board(Player player1, Player player2)
 	{
@@ -29,7 +90,7 @@ public class Board {
 				boxList.get(17).PileStone((new Stone(player1.getName(), false, false)), player1.getName());
 			}
 			//..
-			if(j > 7 && j < 15) {
+			if(j >= 10 && j < 15) {
 				boxList.get(19).PileStone((new Stone(player1.getName(), false, false)), player1.getName());
 			}
 		}
@@ -45,22 +106,13 @@ public class Board {
 				boxList.get(8).PileStone((new Stone(player2.getName(), false, false)), player2.getName());
 			}
 			//..
-			if(i >= 8 && i < 13) {
+			if(i >= 8 && i <= 12) {
 				boxList.get(13).PileStone((new Stone(player2.getName(), false, false)), player2.getName());
 			}
 			//..
-			if(i > 13 && i < 15) {
+			if(i >= 13 && i < 15) {
 				boxList.get(24).PileStone((new Stone(player1.getName(), false, false)), player2.getName());
 			}
-			/*
-			board[1] = 2;
-			board[6] = -5;
-			board[8] = -3;
-			board[12] = 5;
-			board[13] = -5;
-			board[16] = 3;
-			board[18] = 5;
-			board[24] = -2;*/
 		}
 	}
 	

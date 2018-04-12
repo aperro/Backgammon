@@ -27,6 +27,9 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private JLabel diceImage;
 	private JLabel redStoneLabel = new JLabel();
 	private JLabel whiteStoneLabel = new JLabel();
+	private JLabel selectedStoneLabel = new JLabel();
+	
+	private JLabel validateBoxLabel = new JLabel();
 
 	// Les images du bouton et des diffèrentes faces des dés
 	private BufferedImage bg;
@@ -39,6 +42,10 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private BufferedImage dice_6;
 	private BufferedImage redStoneImage;
 	private BufferedImage whiteStoneImage;
+	private BufferedImage stoneSelectedImage;
+	
+	private BufferedImage validateBoxTopImage;
+	private BufferedImage validateBoxBotImage;
 
 	private JLabel diceOne;
 	private JLabel diceTwo;
@@ -47,6 +54,11 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	JButton rollDice;
 
 	GameManager gameManager_;
+	private Boolean OneStoneIsSelected = false;
+	
+	// Test 
+	int dice1 = 1;
+	int dice2 = 5;
 
 	public Interface() {
 		//Display the window.
@@ -71,6 +83,10 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		URL urlDice_6 = getClass().getResource("Dice_6.png");
 		URL urlRedStone = getClass().getResource("RedStone.png");
 		URL urlWhiteStone = getClass().getResource("WhiteStone.png");
+		URL urlSelectedStone = getClass().getResource("StoneSelected.png");
+		
+		URL urlSelectedBoxTop = getClass().getResource("ValidateBoxTop.png");
+		URL urlSelectedBoxBot = getClass().getResource("ValidateBoxBot.png");
 
 		//Initialize image for bg and dice
 		File fileBackground = new File(urlBackground.getPath());
@@ -169,6 +185,34 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			e.printStackTrace();
 		}
 
+		File fileSelectedStone = new File(urlSelectedStone.getPath());
+		stoneSelectedImage = null;
+		try {
+			stoneSelectedImage = ImageIO.read(fileSelectedStone);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Get BoxSelected Image
+		File fileSelectedBoxTop = new File(urlSelectedBoxTop.getPath());
+		validateBoxTopImage = null;
+		try {
+			validateBoxTopImage = ImageIO.read(fileSelectedBoxTop);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		File fileSelectedBoxBot = new File(urlSelectedBoxBot.getPath());
+		validateBoxBotImage = null;
+		try {
+			validateBoxBotImage = ImageIO.read(fileSelectedBoxBot);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		Show();
 
 		//Ajout de l'action listener
@@ -262,52 +306,71 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	// Show all food
 	public void Show()
 	{
+		lp.removeAll();
 		// Background
 		backgroundImage = new JLabel(new ImageIcon(bg));
 		backgroundImage.setBounds(0, 0, width, heigth);
 		lp.add(backgroundImage, new Integer(1));
+		
+		validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
+		validateBoxLabel.setBounds(500, 500, 68, 381);
+		lp.add(validateBoxLabel, new Integer(2));
 
 		rollDice.setBounds(430, 405, 130, 130);
 		lp.add(rollDice, new Integer(2));
-		
+
 		// Créer les stones
-		ShowStones(gameManager_.getBoard().getBoxList());
+		ShowStones();
+
+		if(OneStoneIsSelected) {
+			ShowPossibleMove();
+		}
+		
 		lp.repaint();
 	}
 
 
-	private void ShowStones(List<Box> boxList) {
+	private void ShowStones() {
 		// TODO Auto-generated method stub
-		
+
 		//redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
 		//whiteStoneLabel = new JLabel(new ImageIcon(whiteStoneImage));
 
-		for(int i = 0; i < boxList.size(); i++){
-			if(!boxList.get(i).getIsEmpty()) {
-				System.out.print("Connard");
-				Box currentBox = boxList.get(i);
+		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
+			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
+				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
 				if(currentBox.getOwner().equalsIgnoreCase("Rouge")) {
 
 					// TODO Faire apparaitre les stones rouge dans une case.
 					for(int j = 0; j < currentBox.getStonesInside().size(); j++) {
 						JLabel redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
+						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
+						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
+							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
+						}
+						
 						if(currentBox.getIndexBox() < 13) {
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 50*j, 50, 50);
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 50*j, 50, 50);
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 40*j, 50, 50);
 						}
 						lp.add(redStoneLabel, new Integer(2));
 					}
 				}
 				if(currentBox.getOwner().equalsIgnoreCase("Blanc")) {
-					
+
 					// TODO Faire apparaitre les stones blanches dans une case.
 					for(int j = 0; j < currentBox.getStonesInside().size(); j++) {
 						JLabel whiteStoneLabel = new JLabel(new ImageIcon(whiteStoneImage));
+						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
+						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
+							whiteStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
+						}
+						
 						if(currentBox.getIndexBox() < 13) {
-							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 50*j, 50, 50);
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
-							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 50*j, 50, 50);
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 40*j, 50, 50);
 						}
 						lp.add(whiteStoneLabel, new Integer(2));
 					}
@@ -316,16 +379,61 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		}
 	}
 
+	private void ShowPossibleMove() {
+		// TODO Auto-generated method stub
+		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
+			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
+				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
+				
+				/*if(currentBox.getIsAPossibleMove()) {
+
+				}*/
+			}
+		}
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		int x = e.getX();
-		int y = e.getY();
-		System.out.println(x + " ; " + y);
+		int x = e.getX() - 9;
+		int y = e.getY() - 40;
+		System.out.println(x + " ; " + y + " \n ");
 
-		// 9; 38 En haut à gauche du terrain
-		// 40; 70 Coin en haut à gauche du début du terrain
+
+		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
+			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
+				// case non vide
+				if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
+					Box currentBox = gameManager_.getBoard().getBoxList().get(i);
+
+					System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
+					// On est dans la partie haut du terrain
+					if(currentBox.getIndexBox() <= 12) {
+						if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
+							gameManager_.getBoard().BoxSelected(i);
+							OneStoneIsSelected = true;
+							
+							// Test
+							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
+						}
+					}
+					// On est dans la partie basse du terrain
+					else {
+						if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y <= currentBox.getBoxStartPosition().y && y >= currentBox.getBoxEndPosition().y) {
+							gameManager_.getBoard().BoxSelected(i);
+							OneStoneIsSelected = true;
+							
+							// Test
+							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
+						}
+					}
+				}
+			}
+		}
+		System.out.print("Selectionné");
+		Show();
 	}
+
 
 	@Override
 	public void mouseEntered(MouseEvent e) {

@@ -10,7 +10,7 @@ public class Player {
 	public Player(String name) {
 		this.setName(name);
 		this.remainingStone = 15;
-		for(int i = 1; i < 15; i++) {
+		for(int i = 0; i < 15; i++) {
 			stoneList.add(new Stone(this.getName(), false, false));
 		}
 	}
