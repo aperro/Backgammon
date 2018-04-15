@@ -55,11 +55,41 @@ public class Board {
 		}
 	}
 	
+	public void TakeStoneAtBox(int boxIndex)
+	{
+		Box box = boxList.get(boxIndex);
+		if (box.getStonesInside().size() == 1 && !box.getOwner().isPlaying())
+		{
+			Stone stoneToTake;
+			if (box.getOwner().getName().equalsIgnoreCase("Rouge"))
+			{
+				stoneToTake = box.getStonesInside().get(0);
+				stoneToTake.SetBox(boxList.get(26)); // Red prison
+			}
+			else
+			{
+				stoneToTake = box.getStonesInside().get(0);
+				stoneToTake.SetBox(boxList.get(27)); // White prison
+			}
+		}
+	}
+	
 	public void DesactiveAllPossibleMove() {
-		// TODO Auto-generated method stub
 		for(int i=0; i < boxList.size(); i++) {
 			boxList.get(i).setIsAPossibleMove(false);
 		}
+	}
+	
+	// Returns the number of box with isAPossibleMove = true between fromInd (inclusive) and toInd (inclusive)
+	public int NumberOfPossibleMoves(int fromInd, int toInd)
+	{
+		int num = 0;
+		for (Box box : boxList.subList(fromInd, toInd+1))
+		{
+			if (box.getIsAPossibleMove())
+				num++;
+		}
+		return num;
 	}
 
 	public Boolean CheckIsEmpty(int indexBox) {

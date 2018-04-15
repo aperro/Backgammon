@@ -35,7 +35,70 @@ public class GameManager {
 			diceTwo.setRemainingUse(1);
 		}
 		diceLaunched = true;
-		System.out.println("RollDices : " + diceOne.Value() + "; " + diceTwo.Value());
+		System.out.println("RollDices : " + diceOne.Value() + " & " + diceTwo.Value());
+		
+		if (!IsAllowedToPlay())
+		{
+			
+			EndOfTurn();
+		}
+	}
+	
+	public boolean IsAllowedToPlay()
+	{
+		if (player1.isPlaying())
+		{
+			if (!board.getBoxList().get(26).isEmpty())
+			{
+				PossibleMove(26, player1);
+				if (board.NumberOfPossibleMoves(1, 6) == 0)
+				{
+					System.out.println("Pas de coup possible pour le prisonnier");
+					return false;
+				}
+			} else
+			{
+				if (CheckAllBoardMove(player1) == 0)
+				{
+					System.out.println("Pas de coup possible");
+					return false;
+				}
+			}
+		} else
+		{
+			if (!board.getBoxList().get(27).isEmpty())
+			{
+				PossibleMove(27, player2);
+				if (board.NumberOfPossibleMoves(19, 24) == 0)
+				{
+					System.out.println("Pas de coup possible pour le prisonnier");
+					return false;
+				}
+			} else
+			{
+				if (CheckAllBoardMove(player2) == 0)
+				{
+					System.out.println("Pas de coup possible");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public int CheckAllBoardMove(Player player)
+	{
+		int totalMove = 0;
+		for (int i = 0; i < 26; i++)
+		{
+			Box box = board.getBoxList().get(i); 
+			if (box.getOwner() != null && box.getOwner().equals(player))
+			{
+				PossibleMove(i, player);
+				totalMove += board.NumberOfPossibleMoves(Math.max(0, i-6), Math.min(i+6, 25));
+			}
+		}
+		return totalMove;
 	}
 
 	public void FillBox()
@@ -70,18 +133,56 @@ public class GameManager {
 		}
 
 		// décroît le nombre d'utilisations restantes du dé utilisé
+		if (indexOldBox == 26) // prison joueur 1
+		{
+			if (diceOne.Value() == indexNewBox && diceOne.getRemainingUse() > 0)
+			{
+				diceOne.DecreaseRemainingUse();
+			} else
+			{
+				if (diceTwo.Value() == indexNewBox && diceTwo.getRemainingUse() > 0)
+				{
+					diceTwo.DecreaseRemainingUse();
+				}
+				else
+				{
+					System.out.println("error determining which dice was played");
+					return;
+				}
+			}
+		}
 		
-		// si on a joué le dé n°1
+		if (indexOldBox == 27) // prison joueur 2
+		{
+			if (diceOne.Value() == 25-indexNewBox && diceOne.getRemainingUse() > 0)
+			{
+				diceOne.DecreaseRemainingUse();
+			} else
+			{
+				if (diceTwo.Value() == 25-indexNewBox && diceTwo.getRemainingUse() > 0)
+				{
+					diceTwo.DecreaseRemainingUse();
+				}
+				else
+				{
+					System.out.println("error determining which dice was played");
+					return;
+				}
+			}
+		}
+		
+		// si on a joué le dé n°1 <|°_°|>
 		if (diceOne.Value() == Math.abs(indexOldBox - indexNewBox) && diceOne.getRemainingUse() > 0)
 		{
 			diceOne.DecreaseRemainingUse();
 		} else
 		{
+			// si on a joué le dé n°2 <|°_°|>
 			if (diceTwo.Value() == Math.abs(indexOldBox - indexNewBox) && diceTwo.getRemainingUse() > 0)
 			{
 				diceTwo.DecreaseRemainingUse();
 			} 
-			else // si on peut sortir et que les dés sont tout les deux trop grands
+			else // si on peut sortir et que les dés sont tous les deux trop grands
 			{
 				if (GetPlaying().CanEnd())
 				{
@@ -105,10 +206,14 @@ public class GameManager {
 			}
 		}
 		
-		// TODO : gérer si il y a un pion adverse sur cette case
+		// gère si il y a un pion adverse sur cette case
+		if (nextBox.getOwner() != null && !nextBox.getOwner().equals(currentBox.getOwner()) && nextBox.getStonesInside().size() == 1)
+		{
+			board.TakeStoneAtBox(indexNewBox);
+		}
 		
 		FillBox();
-		if (diceOne.getRemainingUse() == 0 && diceTwo.getRemainingUse() == 0)
+		if (diceOne.getRemainingUse() == 0 && diceTwo.getRemainingUse() == 0 || !this.IsAllowedToPlay())
 		{
 			EndOfTurn();
 		}
@@ -119,11 +224,28 @@ public class GameManager {
 	{
 		boolean canMove = false;
 		Box selectedBox = board.getBoxList().get(boxId);
-		if (selectedBox.getOwner() != null && selectedBox.getOwner().isPlaying() && boxId < 25 && boxId > 0)
+		System.out.println(selectedBox.getOwner() != null);
+		if (selectedBox.getOwner() != null && selectedBox.getOwner().isPlaying() && boxId > 0)
 		{
-			PossibleMove(boxId, selectedBox.getOwner());
-			board.SetSelectedBox(boxId);
-			canMove = true;
+			System.out.println(player1.isPlaying() + " - " + player2.isPlaying() + " - " + ((boxId < 25 && board.getBoxList().get(26).isEmpty()) || (boxId == 26 && !board.getBoxList().get(26).isEmpty())));
+			if ( player1.isPlaying() )
+			{
+				if ( (boxId < 25 && board.getBoxList().get(26).isEmpty()) || (boxId == 26 && !board.getBoxList().get(26).isEmpty()) )
+				{
+					PossibleMove(boxId, selectedBox.getOwner());
+					board.SetSelectedBox(boxId);
+					canMove = true;
+				}				
+			}
+			else
+			{
+				if ( (boxId < 25 && board.getBoxList().get(27).isEmpty()) || (boxId == 27 && !board.getBoxList().get(27).isEmpty()) )
+				{
+					PossibleMove(boxId, selectedBox.getOwner());
+					board.SetSelectedBox(boxId);
+					canMove = true;
+				}
+			}
 		}
 		return canMove;
 	}
@@ -131,7 +253,6 @@ public class GameManager {
 	public boolean MoveToBox(int boxId)
 	{
 		boolean canMove = false;
-		
 		int oldBox = board.GetSelectedBox();
 		// Si on clique sur la même case
 		if (boxId == oldBox)
@@ -155,11 +276,81 @@ public class GameManager {
 	public void PossibleMove(int indexBoxSelected, Player owner) 
 	{
 		int dice1 = diceOne.Value(), dice2 = diceTwo.Value();
-		System.out.println(dice1 + " and " + dice2);
 		// On reset les possible move bool de toutes les cases
 		board.DesactiveAllPossibleMove();
-
-
+		
+		if (indexBoxSelected == 26) // un pion rouge en prison
+		{
+			Box boxAfterDice1 = board.getBoxList().get(dice1);
+			Box boxAfterDice2 = board.getBoxList().get(dice2);
+			
+			if (diceOne.getRemainingUse() > 0)
+			{
+				if (boxAfterDice1.getOwner() == null || boxAfterDice1.getOwner().equals(player1))
+				{
+					boxAfterDice1.setIsAPossibleMove(true);
+				} else
+				{
+					// Si il y a un seul pion adverse
+					if (boxAfterDice1.getStonesInside().size() == 1)
+					{
+						boxAfterDice1.setIsAPossibleMove(true);
+					}
+				}
+			}
+			if (diceTwo.getRemainingUse() > 0)
+			{
+				if (boxAfterDice2.getOwner() == null || boxAfterDice2.getOwner().equals(player1))
+				{
+					boxAfterDice2.setIsAPossibleMove(true);
+				} else
+				{
+					// Si il y a un seul pion adverse
+					if (boxAfterDice2.getStonesInside().size() == 1)
+					{
+						boxAfterDice2.setIsAPossibleMove(true);
+					}
+				}
+			}
+			return;
+		}
+		
+		if (indexBoxSelected == 27) // un pion blanc en prison
+		{
+			Box boxAfterDice1 = board.getBoxList().get(25 - dice1);
+			Box boxAfterDice2 = board.getBoxList().get(25 - dice2);
+			
+			if (diceOne.getRemainingUse() > 0)
+			{
+				if (boxAfterDice1.getOwner() == null || boxAfterDice1.getOwner().equals(player2))
+				{
+					boxAfterDice1.setIsAPossibleMove(true);
+				} else
+				{
+					// Si il y a un seul pion adverse
+					if (boxAfterDice1.getStonesInside().size() == 1)
+					{
+						boxAfterDice1.setIsAPossibleMove(true);
+					}
+				}
+			}
+			if (diceTwo.getRemainingUse() > 0)
+			{
+				if (boxAfterDice2.getOwner() == null || boxAfterDice2.getOwner().equals(player2))
+				{
+					boxAfterDice2.setIsAPossibleMove(true);
+				} else
+				{
+					// Si il y a un seul pion adverse
+					if (boxAfterDice2.getStonesInside().size() == 1)
+					{
+						boxAfterDice2.setIsAPossibleMove(true);
+					}
+				}
+			}
+			return;
+		}
+		
 		// On regarde si la stone a bouger est celle du joueur 1
 		if(owner.equals(player1)) {
 			// On va dans le sens 1-25
@@ -182,7 +373,7 @@ public class GameManager {
 					}
 				} else
 				{
-					if (!player1.CanEnd())
+					if (player1.CanEnd())
 					{
 						if ((indexBoxSelected + dice1) == 25)
 						{
@@ -226,7 +417,7 @@ public class GameManager {
 					}
 				} else
 				{
-					if (!player1.CanEnd())
+					if (player1.CanEnd())
 					{
 						if ((indexBoxSelected + dice2) == 25)
 						{
@@ -275,7 +466,7 @@ public class GameManager {
 				
 				} else
 				{
-					if (!player2.CanEnd())
+					if (player2.CanEnd())
 					{
 						if ((indexBoxSelected - dice1) == 0)
 						{
@@ -320,7 +511,7 @@ public class GameManager {
 				
 				} else
 				{
-					if (!	player2.CanEnd())
+					if (player2.CanEnd())
 					{
 						if ((indexBoxSelected - dice2) == 0)
 						{

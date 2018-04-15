@@ -344,7 +344,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		ShowStones();
 
 		if(OneStoneIsSelected) {
-			System.out.print("ici");
 			ShowPossibleMove();
 		}
 
@@ -375,12 +374,12 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						}
 						if (currentBox.getIndexBox() == 25) // player 1 goal
 						{
-							redStoneLabel = new JLabel(new ImageIcon(redStoneGoalImage));
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x - 9, currentBox.getBoxStartPosition().y -22 - 26*j, 66, 26);
+							redStoneLabel.setIcon(new ImageIcon(redStoneGoalImage));
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x - 8, currentBox.getBoxStartPosition().y -22 - 26*j, 66, 26);
 						}
 
 						if (currentBox.getIndexBox() == 26) // player 1 prison
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 50 - 45*j, 50, 50);
 						lp.add(redStoneLabel, new Integer(2));
 					}
 				}
@@ -394,14 +393,21 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
 							whiteStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
-						if (currentBox.getIndexBox() == 0) // player 2 goal
-							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 30*j, 50, 50);
-
+						
 						if(currentBox.getIsTop()) {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 40*j - 50, 50, 50);
 						}
+						if (currentBox.getIndexBox() == 0) // player 2 goal
+						{
+							whiteStoneLabel.setIcon(new ImageIcon(whiteStoneGoalImage));
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x - 8, currentBox.getBoxStartPosition().y -5 + 26*j, 66, 26);
+						}
+
+						if (currentBox.getIndexBox() == 27) // player 2 prison
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 45*j, 50, 50);
+						
 						lp.add(whiteStoneLabel, new Integer(2));
 					}
 				}
@@ -476,7 +482,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			}
 		}
 
-		if (clickedBox > 0 && clickedBox < 26)
+		if (clickedBox >= 0 && clickedBox < 28)
 		{
 			// Si c'est le premier clique valide du joueur : selection d'un pion
 			if (!OneStoneIsSelected)

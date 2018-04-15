@@ -98,16 +98,34 @@ public class Box {
 		boxEndPosition.y = boxStartPosition.y - boxHeight;
 		break;
 		default:// End boxes
-			boxStartPosition.x = 1000;
-			boxEndPosition.x = boxStartPosition.x + boxWidth;
-			if (indexBox == 0) // FAIRE LES 2 POSITION DE UNE FOIS MANGé
+			if (indexBox == 0) // White goal
 			{
 				boxStartPosition.y = 35;
+				boxStartPosition.x = 1000;
+				boxEndPosition.x = boxStartPosition.x + boxWidth;
 				boxEndPosition.y = boxStartPosition.y + boxHeight;
-			} else
+			} 
+			if (indexBox == 25)	// Red goal
 			{
 				boxStartPosition.y = 890;
+				boxStartPosition.x = 1000;
+				boxEndPosition.x = boxStartPosition.x + boxWidth;
 				boxEndPosition.y = boxStartPosition.y - boxHeight;
+			}
+			if (indexBox == 26)	// red prison
+			{
+				boxStartPosition.x = 470;
+				boxStartPosition.y = 400;
+				boxEndPosition.x = boxStartPosition.x + boxWidth;
+				boxEndPosition.y = (int) (boxStartPosition.y - boxHeight*0.8);
+			}
+			if (indexBox == 27)	// white prison
+			{
+				boxStartPosition.x = 470;
+				boxStartPosition.y = 460;
+				boxEndPosition.x = boxStartPosition.x + boxWidth;
+				boxEndPosition.y = (int) (boxStartPosition.y + boxHeight*0.8);
+				isTop = true;
 			}
 			break;
 		}
