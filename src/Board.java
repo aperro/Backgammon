@@ -5,12 +5,12 @@ public class Board {
 	// Le plateau possède 26 cases différentes avec leur place respective
 	private List<Box> boxList = new ArrayList<Box>();
 	private int selectedBox_ = -1;
-	
+
 	public Board(Player player1, Player player2)
 	{
 		// To-do Créer l'ensemble des box
 		for(int i = 0; i < 28; i++) {
-				boxList.add(new Box(i));
+			boxList.add(new Box(i));
 		}
 
 		// Player 1 position de départ
@@ -28,9 +28,13 @@ public class Board {
 				player1.getStoneList().get(j).SetBox(boxList.get(17));
 			}
 			//..
-			if(j >= 10 && j < 15) {
+			if(j >= 10 && j < 14) {
 				player1.getStoneList().get(j).SetBox(boxList.get(19));
 			}
+			if(j == 14) {
+				player1.getStoneList().get(j).SetBox(boxList.get(25));
+			}
+			
 		}
 
 		// Player 2 position de départ
@@ -52,12 +56,12 @@ public class Board {
 				player2.getStoneList().get(i).SetBox(boxList.get(24));
 			}
 		}
-		
-		
+
+
 	}
-	
-	
-	
+
+
+
 	public void DesactiveAllPossibleMove() {
 		// TODO Auto-generated method stub
 		for(int i=0; i < boxList.size(); i++) {
@@ -68,11 +72,11 @@ public class Board {
 	public Boolean CheckIsEmpty(int indexBox) {
 		return boxList.get(indexBox).isEmpty();
 	}
-	
+
 	public void SetSelectedBox(int indexBoxSelected) {
 		selectedBox_ = indexBoxSelected;
 	}
-	
+
 	public int GetSelectedBox() {
 		return selectedBox_;
 	}

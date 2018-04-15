@@ -27,9 +27,12 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private JLabel diceImage;
 	private JLabel redStoneLabel = new JLabel();
 	private JLabel whiteStoneLabel = new JLabel();
+	private JLabel redStoneGoalLabel = new JLabel();
+	private JLabel whiteStoneGoalLabel = new JLabel();
 	private JLabel selectedStoneLabel = new JLabel();
 
 	private JLabel validateBoxLabel = new JLabel();
+	private JLabel validateBoxGoalLabel = new JLabel();
 
 	// Les images du bouton et des diffèrentes faces des dés
 	private BufferedImage bg;
@@ -42,10 +45,14 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private BufferedImage dice_6;
 	private BufferedImage redStoneImage;
 	private BufferedImage whiteStoneImage;
+	private BufferedImage redStoneGoalImage;
+	private BufferedImage whiteStoneGoalImage;
+
 	private BufferedImage stoneSelectedImage;
 
 	private BufferedImage validateBoxTopImage;
 	private BufferedImage validateBoxBotImage;
+	private BufferedImage validateBoxGoalImage;
 
 	private JLabel diceOne;
 	private JLabel diceTwo;
@@ -83,10 +90,13 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		URL urlDice_6 = getClass().getResource("Dice_6.png");
 		URL urlRedStone = getClass().getResource("RedStone.png");
 		URL urlWhiteStone = getClass().getResource("WhiteStone.png");
+		URL urlRedGoalStone = getClass().getResource("RedStoneGoal.png");
+		URL urlWhiteGoalStone = getClass().getResource("WhiteStoneGoal.png");
 		URL urlSelectedStone = getClass().getResource("StoneSelected.png");
 
 		URL urlSelectedBoxTop = getClass().getResource("ValidateBoxTop.png");
 		URL urlSelectedBoxBot = getClass().getResource("ValidateBoxBot.png");
+		URL urlSelectedBoxGoal = getClass().getResource("ValidateBoxGoal.png");
 
 		//Initialize image for bg and dice
 		File fileBackground = new File(urlBackground.getPath());
@@ -166,7 +176,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		}
 
 		// get stone images
-
 		File fileRedStone = new File(urlRedStone.getPath());
 		redStoneImage = null;
 		try {
@@ -180,6 +189,26 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		whiteStoneImage = null;
 		try {
 			whiteStoneImage = ImageIO.read(fileWhiteStone);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// get stone Goal images
+
+		File fileRedGoalStone = new File(urlRedGoalStone.getPath());
+		redStoneGoalImage = null;
+		try {
+			redStoneGoalImage = ImageIO.read(fileRedGoalStone);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		File fileWhiteGoalStone= new File(urlWhiteGoalStone.getPath());
+		whiteStoneGoalImage = null;
+		try {
+			whiteStoneGoalImage = ImageIO.read(fileWhiteGoalStone);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,6 +242,15 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			e.printStackTrace();
 		}
 
+		File fileSelectedBoxGoal = new File(urlSelectedBoxGoal.getPath());
+		validateBoxGoalImage = null;
+		try {
+			validateBoxGoalImage = ImageIO.read(fileSelectedBoxGoal);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		Show();
 
 		//Ajout de l'action listener
@@ -237,11 +275,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		backgroundImage = new JLabel(new ImageIcon(bg));
 		backgroundImage.setBounds(0, 0, width, heigth);
 		lp.add(backgroundImage, new Integer(1));
-
-		/*validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
-		validateBoxLabel.setBounds(500, 500, 68, 381);
-		lp.add(validateBoxLabel, new Integer(2));*/
-
 		// Si on a lancé les dés, on affiche le résultat, sinon on affiche le bouton de lancement des dés
 		if (!gameManager_.isDiceLaunched())
 		{	
@@ -314,7 +347,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			System.out.print("ici");
 			ShowPossibleMove();
 		}
-		
+
 		lp.repaint();
 	}
 
@@ -326,9 +359,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 		for(Box currentBox : gameManager_.getBoard().getBoxList()){
 			if(!currentBox.isEmpty()) {
-				
-				if(currentBox.getOwner() != null && currentBox.getOwner().getName().equalsIgnoreCase("Rouge")) {
 
+				if(currentBox.getOwner() != null && currentBox.getOwner().getName().equalsIgnoreCase("Rouge")) {
 					// TODO Faire apparaitre les stones rouge dans une case.
 					for(int j = 0; j < currentBox.getStonesInside().size(); j++) {
 						JLabel redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
@@ -337,11 +369,16 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
 						if (currentBox.getIndexBox() == 25) // player 1 goal
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
+						{
+							System.out.println("oki");
+							JLabel redStoneGoalLabel = new JLabel(new ImageIcon(redStoneGoalImage));
+							redStoneGoalLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 26*j, 66, 26);
+							System.out.println("oki");
+						}
 
 						if (currentBox.getIndexBox() == 26) // player 1 prison
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
-						
+
 						if(currentBox.getIsTop()) {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
@@ -380,7 +417,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
 
 			Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-			
+
 			if(currentBox.getIsAPossibleMove()) {
 
 				if(currentBox.getIsTop()) {
@@ -407,7 +444,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		// Check if something is selected
 		int clickedBox = -1;
 		boolean BoxNotEmpty = false;
-		
+
 		for(Box box : gameManager_.getBoard().getBoxList())
 		{
 			// On est dans la partie haut du terrain
@@ -427,7 +464,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 				}
 			}
 		}
-		
+
 		if (clickedBox > 0 && clickedBox < 26)
 		{
 			// Si c'est le premier clique valide du joueur : selection d'un pion
@@ -446,7 +483,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 				}
 			}
 		}
-		
+
 		Show();
 	}
 

@@ -1,4 +1,3 @@
-
 public class Dice {
 	
 	private int number = 1;

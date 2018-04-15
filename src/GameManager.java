@@ -50,6 +50,7 @@ public class GameManager {
 			int stoneBoxIndex = stoneJ1.GetBox().getIndexBox();
 			board.getBoxList().get(stoneBoxIndex).PileStone(player1, stoneJ1);
 		}
+		
 		for(Stone stoneJ2 : player2.getStoneList()){ // player 2 stones 
 			int stoneBoxIndex = stoneJ2.GetBox().getIndexBox();
 			board.getBoxList().get(stoneBoxIndex).PileStone(player2, stoneJ2);
