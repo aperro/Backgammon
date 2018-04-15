@@ -28,11 +28,8 @@ public class Board {
 				player1.getStoneList().get(j).SetBox(boxList.get(17));
 			}
 			//..
-			if(j >= 10 && j < 14) {
+			if(j >= 10 && j < 15) {
 				player1.getStoneList().get(j).SetBox(boxList.get(19));
-			}
-			if(j == 14) {
-				player1.getStoneList().get(j).SetBox(boxList.get(25));
 			}
 			
 		}
@@ -56,12 +53,8 @@ public class Board {
 				player2.getStoneList().get(i).SetBox(boxList.get(24));
 			}
 		}
-
-
 	}
-
-
-
+	
 	public void DesactiveAllPossibleMove() {
 		// TODO Auto-generated method stub
 		for(int i=0; i < boxList.size(); i++) {

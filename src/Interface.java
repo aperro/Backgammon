@@ -368,22 +368,19 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
 							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
-						if (currentBox.getIndexBox() == 25) // player 1 goal
-						{
-							System.out.println("oki");
-							JLabel redStoneGoalLabel = new JLabel(new ImageIcon(redStoneGoalImage));
-							redStoneGoalLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 26*j, 66, 26);
-							System.out.println("oki");
-						}
-
-						if (currentBox.getIndexBox() == 26) // player 1 prison
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
-
 						if(currentBox.getIsTop()) {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 40*j - 50, 50, 50);
 						}
+						if (currentBox.getIndexBox() == 25) // player 1 goal
+						{
+							redStoneLabel = new JLabel(new ImageIcon(redStoneGoalImage));
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x - 9, currentBox.getBoxStartPosition().y -22 - 26*j, 66, 26);
+						}
+
+						if (currentBox.getIndexBox() == 26) // player 1 prison
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
 						lp.add(redStoneLabel, new Integer(2));
 					}
 				}
@@ -421,15 +418,30 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			if(currentBox.getIsAPossibleMove()) {
 
 				if(currentBox.getIsTop()) {
-					validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
-					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 380);
-					lp.add(validateBoxLabel, new Integer(2));
+					if(i == 0) {
+						validateBoxLabel = new JLabel(new ImageIcon(validateBoxGoalImage));
+						validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 9, currentBox.getBoxStartPosition().y - 2, 68, 396);
+						lp.add(validateBoxLabel, new Integer(2));
+					}else {
+						validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
+						validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 380);
+						lp.add(validateBoxLabel, new Integer(2));
+					}
 				}else
 				{
-					validateBoxLabel = new JLabel(new ImageIcon(validateBoxBotImage));
-					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x-9, currentBox.getBoxStartPosition().y - 378, 68, 380);
-					lp.add(validateBoxLabel, new Integer(2));
+					// Si on est sur le goal rouge
+					if(i == 25) {
+						validateBoxLabel = new JLabel(new ImageIcon(validateBoxGoalImage));
+						validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 9, currentBox.getBoxStartPosition().y - 392, 68, 396);
+						lp.add(validateBoxLabel, new Integer(2));
+					}else {
+						validateBoxLabel = new JLabel(new ImageIcon(validateBoxBotImage));
+						validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 9 , currentBox.getBoxStartPosition().y - 378, 68, 380);
+						lp.add(validateBoxLabel, new Integer(2));
+					}
 				}
+
+
 			}
 		}
 	}
@@ -443,7 +455,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 		// Check if something is selected
 		int clickedBox = -1;
-		boolean BoxNotEmpty = false;
 
 		for(Box box : gameManager_.getBoard().getBoxList())
 		{
@@ -482,6 +493,12 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 					OneStoneIsSelected = false;
 				}
 			}
+		}
+		
+		// NOT FINISHED (Permet de désactiver les box vertes, il manque désactiver la stone selectionné
+		if(clickedBox == -1) {
+			gameManager_.getBoard().DesactiveAllPossibleMove();
+			OneStoneIsSelected = false;
 		}
 
 		Show();
