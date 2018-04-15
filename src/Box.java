@@ -3,17 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Box {
-	private int indexBox; // 24 cases, 0 et 25 seront les buts
+	private int indexBox; // 24 cases, 0 et 25 seront les buts, 26 et 27 sont les pions pris rouge(1) et blanc(2)
 
 	private Point boxStartPosition = new Point();
 	private Point boxEndPosition = new Point();
-	private String owner;
-	private Boolean isEmpty;
-	private int currentNumberOfStones;
+	private Player owner;
+
+	private static final int boxWidth = 55;
+	private static final int boxHeight = 360;
 	
-	private static final int stepBetweenBox = 40;
-	
-	private Boolean boxSelected;
 	private Boolean isAPossibleMove;
 	private Boolean isTop;
 
@@ -21,11 +19,8 @@ public class Box {
 
 	public Box(int indexBox) {
 		this.indexBox = indexBox;
-		this.isEmpty = true;
-		this.currentNumberOfStones = 0;
-		this.boxSelected = false;
 		this.isAPossibleMove = false;
-		this.owner = "Nobody";
+		this.owner = null;
 		
 		// Savoir si box du haut ou du bas
 		if(this.getIndexBox() < 13) {
@@ -38,38 +33,26 @@ public class Box {
 	}
 
 	public void DepileStone() {
-		if(this.currentNumberOfStones > 0) {
+		if(this.StonesInside.size() > 0) {
 			StonesInside.remove(StonesInside.size()-1);
-			this.currentNumberOfStones--;
-		}
-		if(this.currentNumberOfStones == 0) {
-			this.isEmpty = true;
 		}
 	}
 	
-	public void PileStone(String player) {
-		this.StonesInside.add(new Stone(player, false, false));
+	public void Clear()
+	{
+		this.StonesInside.clear();
+	}
+	
+	public void PileStone(Player player, Stone stone) {
+		this.StonesInside.add(stone);
 		this.owner = player;
 		// TO-DO Placer les pions dans les box
-		this.currentNumberOfStones++;
-		
-		// First Stone
-		if(isEmpty == true) {
-			if(getIsTop()) {
-				this.boxEndPosition.y = boxStartPosition.y + 300;
-			}
-			if(!getIsTop()) {
-				this.boxEndPosition.y = boxStartPosition.y - 300;
-			}
-			isEmpty = false;
-		}
-		this.currentNumberOfStones++;
 	}
 
 	private void GeneratePositionThisBox() {
 		// TODO Auto-generated method stub
 		
-		// Pour l'affichage seulement
+		// Pour l'affichage et la hitbox seulement
 		
 		int tableCoin = 0;
 		if(indexBox > 0 && indexBox <= 6) {
@@ -90,32 +73,43 @@ public class Box {
 		boxStartPosition.x = 900 - ( indexBox -1) *66;
 		boxStartPosition.y = 35;
 		
-		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y + 200;
+		boxEndPosition.x = boxStartPosition.x + boxWidth;
+		boxEndPosition.y = boxStartPosition.y + boxHeight;
 		break;
 		
-		case 2: tableCoin = 2; // En haut à droite
+		case 2: tableCoin = 2; // En haut à gauche
 		boxStartPosition.x = 40 + (12 - indexBox) *66;
 		boxStartPosition.y = 35;
-		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y + 200;
+		boxEndPosition.x = boxStartPosition.x + boxWidth;
+		boxEndPosition.y = boxStartPosition.y + boxHeight;
 		break;
 
 		case 3: tableCoin = 3; // En bas à gauche
 		boxStartPosition.x = 40 + (indexBox -13) *66;
-		boxStartPosition.y = 840;
-		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y - 200;
+		boxStartPosition.y = 890;
+		boxEndPosition.x = boxStartPosition.x + boxWidth;
+		boxEndPosition.y = boxStartPosition.y - boxHeight;
 		break;
 		
 		case 4: tableCoin = 4; // En bas à droite
 		boxStartPosition.x = 900 - (24 - indexBox) *66;
-		boxStartPosition.y = 840;
-		boxEndPosition.x = boxStartPosition.x + stepBetweenBox;
-		boxEndPosition.y = boxStartPosition.y - 200;
+		boxStartPosition.y = 890;
+		boxEndPosition.x = boxStartPosition.x + boxWidth;
+		boxEndPosition.y = boxStartPosition.y - boxHeight;
 		break;
-		default: System.out.print("Bug");
-		break;
+		default:// End boxes
+			boxStartPosition.x = 1000;
+			boxEndPosition.x = boxStartPosition.x + boxWidth;
+			if (indexBox == 0) // FAIRE LES 2 POSITION DE UNE FOIS MANGé
+			{
+				boxStartPosition.y = 35;
+				boxEndPosition.y = boxStartPosition.y + boxHeight;
+			} else
+			{
+				boxStartPosition.y = 890;
+				boxEndPosition.y = boxStartPosition.y - boxHeight;
+			}
+			break;
 		}
 	}
 
@@ -143,20 +137,16 @@ public class Box {
 		this.boxEndPosition = boxEnd;
 	}
 
-	public String getOwner() {
+	public Player getOwner() {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(Player owner) {
 		this.owner = owner;
 	}
 
-	public Boolean getIsEmpty() {
-		return isEmpty;
-	}
-
-	public void setIsEmpty(Boolean isEmpty) {
-		this.isEmpty = isEmpty;
+	public Boolean isEmpty() {
+		return (this.StonesInside.size() == 0);
 	}
 
 	public List<Stone> getStonesInside() {
@@ -169,14 +159,6 @@ public class Box {
 
 	public Box(List<Stone> StonesInside){
 		this.StonesInside = StonesInside;
-	}
-
-	public Boolean getBoxSelected() {
-		return boxSelected;
-	}
-
-	public void setBoxSelected(Boolean boxSelected) {
-		this.boxSelected = boxSelected;
 	}
 
 	public Boolean getIsAPossibleMove() {

@@ -54,7 +54,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	JButton rollDice;
 
 	GameManager gameManager_;
-	private Boolean OneStoneIsSelected = false;
+	private boolean OneStoneIsSelected = false;
 
 	// Test 
 	int dice1 = 1;
@@ -222,80 +222,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			public void actionPerformed(ActionEvent e)
 			{
 				gameManager_.RollDices();
-				//System.out.println(gameManager_.getDiceOne().GetNumber());
-				//System.out.println(gameManager_.getDiceTwo().GetNumber());
-
-				lp.removeAll();//or remove(JComponent)
-				//Dice 1
-				switch (gameManager_.getDiceOne().GetNumber())
-				{
-				case 1:
-					diceOne = new JLabel(new ImageIcon(dice_1));
-					diceOne.setBounds(130, 415, 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				case 2:
-					diceOne = new JLabel(new ImageIcon(dice_2));
-					diceOne.setBounds(130, 415 , 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				case 3:
-					diceOne = new JLabel(new ImageIcon(dice_3));
-					diceOne.setBounds(130, 415, 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				case 4:
-					diceOne = new JLabel(new ImageIcon(dice_4));
-					diceOne.setBounds(130, 415, 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				case 5:
-					diceOne = new JLabel(new ImageIcon(dice_5));
-					diceOne.setBounds(130, 415, 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				case 6:
-					diceOne = new JLabel(new ImageIcon(dice_6));
-					diceOne.setBounds(130, 415, 100, 100);
-					lp.add(diceOne, new Integer(2));
-					break;
-				default:
-					break;
-				}
-
-				// Dice 2
-				switch (gameManager_.getDiceTwo().GetNumber())
-				{
-				case 1:
-					diceTwo = new JLabel(new ImageIcon(dice_1));
-					diceTwo.setBounds(280, 415, 100, 100);
-					lp.add(diceTwo, new Integer(2));
-					break;
-				case 2:
-					diceTwo = new JLabel(new ImageIcon(dice_2));
-					diceTwo.setBounds(280, 415, 100, 100);
-					lp.add(diceTwo, new Integer(2));
-					break;
-				case 3:
-					diceTwo = new JLabel(new ImageIcon(dice_3));
-					diceTwo.setBounds(280, 415, 100, 100);
-					lp.add(diceTwo, new Integer(2));
-					break;
-				case 4:
-					diceTwo = new JLabel(new ImageIcon(dice_4));
-					diceTwo.setBounds(280, 415, 100, 100);
-					lp.add(diceTwo, new Integer(2));
-					break;
-				case 5:
-					diceTwo = new JLabel(new ImageIcon(dice_5));
-					diceTwo.setBounds(280, 415, 100, 100);
-
-					System.out.println("Je passe ici");
-					lp.add(diceTwo, new Integer(2));
-					break;
-				default:
-					break;
-				}
 
 				Show();
 			}
@@ -316,8 +242,70 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		validateBoxLabel.setBounds(500, 500, 68, 381);
 		lp.add(validateBoxLabel, new Integer(2));*/
 
-		rollDice.setBounds(430, 405, 130, 130);
-		lp.add(rollDice, new Integer(2));
+		// Si on a lancé les dés, on affiche le résultat, sinon on affiche le bouton de lancement des dés
+		if (!gameManager_.isDiceLaunched())
+		{	
+			rollDice.setBounds(705, 405, 130, 130);
+			lp.add(rollDice, new Integer(2));
+		} else
+		{
+			//Dice 1
+			switch (gameManager_.getDiceOne().Value())
+			{
+			case 1:
+				diceOne = new JLabel(new ImageIcon(dice_1));
+				break;
+			case 2:
+				diceOne = new JLabel(new ImageIcon(dice_2));
+				break;
+			case 3:
+				diceOne = new JLabel(new ImageIcon(dice_3));
+				break;
+			case 4:
+				diceOne = new JLabel(new ImageIcon(dice_4));
+				break;
+			case 5:
+				diceOne = new JLabel(new ImageIcon(dice_5));
+				break;
+			case 6:
+				diceOne = new JLabel(new ImageIcon(dice_6));
+				break;
+			default:
+				break;
+			}
+
+			// Dice 2
+			switch (gameManager_.getDiceTwo().Value())
+			{
+			case 1:
+				diceTwo = new JLabel(new ImageIcon(dice_1));
+				break;
+			case 2:
+				diceTwo = new JLabel(new ImageIcon(dice_2));
+				break;
+			case 3:
+				diceTwo = new JLabel(new ImageIcon(dice_3));
+				break;
+			case 4:
+				diceTwo = new JLabel(new ImageIcon(dice_4));
+				break;
+			case 5:
+				diceTwo = new JLabel(new ImageIcon(dice_5));
+				break;
+			case 6:
+				diceTwo = new JLabel(new ImageIcon(dice_6));
+				break;
+			default:
+				break;
+			}
+
+			diceOne.setBounds(130, 415, 100, 100);
+			diceTwo.setBounds(280, 415, 100, 100);
+			if (gameManager_.getDiceOne().getRemainingUse() > 0)
+				lp.add(diceOne, new Integer(2));
+			if (gameManager_.getDiceTwo().getRemainingUse() > 0)
+				lp.add(diceTwo, new Integer(2));
+		}
 
 		// Créer les stones
 		ShowStones();
@@ -326,7 +314,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			System.out.print("ici");
 			ShowPossibleMove();
 		}
-
+		
 		lp.repaint();
 	}
 
@@ -336,41 +324,49 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		//redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
 		//whiteStoneLabel = new JLabel(new ImageIcon(whiteStoneImage));
 
-		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty()) {
-				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-				if(currentBox.getOwner().equalsIgnoreCase("Rouge")) {
+		for(Box currentBox : gameManager_.getBoard().getBoxList()){
+			if(!currentBox.isEmpty()) {
+				
+				if(currentBox.getOwner() != null && currentBox.getOwner().getName().equalsIgnoreCase("Rouge")) {
 
 					// TODO Faire apparaitre les stones rouge dans une case.
 					for(int j = 0; j < currentBox.getStonesInside().size(); j++) {
 						JLabel redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
 						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
-						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
+						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
 							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
+						if (currentBox.getIndexBox() == 25) // player 1 goal
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
 
+						if (currentBox.getIndexBox() == 26) // player 1 prison
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 30*j, 50, 50);
+						
 						if(currentBox.getIsTop()) {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
-							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 40*j, 50, 50);
+							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x , currentBox.getBoxStartPosition().y - 40*j - 50, 50, 50);
 						}
 						lp.add(redStoneLabel, new Integer(2));
 					}
 				}
-				if(currentBox.getOwner().equalsIgnoreCase("Blanc")) {
+				if(currentBox.getOwner() != null && currentBox.getOwner().getName().equalsIgnoreCase("Blanc")) {
 
 					// TODO Faire apparaitre les stones blanches dans une case.
 					for(int j = 0; j < currentBox.getStonesInside().size(); j++) {
 						JLabel whiteStoneLabel = new JLabel(new ImageIcon(whiteStoneImage));
 						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
-						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getBoxSelected()) {
+						System.out.println(gameManager_.getBoard().GetSelectedBox());
+						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
 							whiteStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
 						}
+						if (currentBox.getIndexBox() == 0) // player 2 goal
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 30*j, 50, 50);
 
 						if(currentBox.getIsTop()) {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
-							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 40*j, 50, 50);
+							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y - 40*j - 50, 50, 50);
 						}
 						lp.add(whiteStoneLabel, new Integer(2));
 					}
@@ -389,12 +385,12 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 				if(currentBox.getIsTop()) {
 					validateBoxLabel = new JLabel(new ImageIcon(validateBoxTopImage));
-					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 381);
+					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y -2, 68, 380);
 					lp.add(validateBoxLabel, new Integer(2));
 				}else
 				{
 					validateBoxLabel = new JLabel(new ImageIcon(validateBoxBotImage));
-					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x - 7, currentBox.getBoxStartPosition().y - 330, 68, 381);
+					validateBoxLabel.setBounds(currentBox.getBoxStartPosition().x-9, currentBox.getBoxStartPosition().y - 378, 68, 380);
 					lp.add(validateBoxLabel, new Integer(2));
 				}
 			}
@@ -409,75 +405,48 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		System.out.println(x + " ; " + y + " \n ");
 
 		// Check if something is selected
-		int notInBox = 0;
-		int BoxNotEmpty = 0;
-		for(int i = 0; i < gameManager_.getBoard().getBoxList().size(); i++){
-			// case non vide OU une pièce selectionnée
-			if(!gameManager_.getBoard().getBoxList().get(i).getIsEmpty() || OneStoneIsSelected) {
-				BoxNotEmpty++;
-				Box currentBox = gameManager_.getBoard().getBoxList().get(i);
-				
-				System.out.println(currentBox.getBoxStartPosition().x + " "+ currentBox.getBoxEndPosition().x  + " "+  currentBox.getBoxStartPosition().y + " "+ currentBox.getBoxEndPosition().y + " \n");
-				
-				// On est dans la partie haut du terrain
-				if(currentBox.getIsTop()) {
-					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y >= currentBox.getBoxStartPosition().y && y <= currentBox.getBoxEndPosition().y) {
-						// La case cliquée est-t-elle vide ? Si oui alors nouvelle selection
-						if(!currentBox.getIsEmpty() && !currentBox.getIsAPossibleMove()) {
-							gameManager_.getBoard().BoxSelected(i);
-							OneStoneIsSelected = true;
-							System.out.print("Selectionné");
-							// On affiche les mouvements possibles
-							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
-						}
-						
-						int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
-						Box oldBox = gameManager_.getBoard().getBoxList().get(oldIndex);
-						// La case cliqué est-il une case où le joueur peut poser sa stone? Si oui alors on change la stone de place
-						if(oldIndex != 0 &&(currentBox.getIsEmpty() || oldBox.getOwner() == currentBox.getOwner()) && currentBox.getIsAPossibleMove()) {
-							System.out.print("Hi");
-							// faire un if
-							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, oldBox.getOwner());
-							gameManager_.getBoard().DesactiveAllSelected();
-							OneStoneIsSelected = false;
-						}
-					}
-					else {
-						notInBox++;
-					}
+		int clickedBox = -1;
+		boolean BoxNotEmpty = false;
+		
+		for(Box box : gameManager_.getBoard().getBoxList())
+		{
+			// On est dans la partie haut du terrain
+			if(box.getIsTop()) {
+				// Si on a cliqué dans cette case
+				if(x >= box.getBoxStartPosition().x && x <= box.getBoxEndPosition().x && y >= box.getBoxStartPosition().y && y <= box.getBoxEndPosition().y) 
+				{
+					clickedBox = box.getIndexBox();
 				}
-				// On est dans la partie basse du terrain
-				else {
-					if(x >= currentBox.getBoxStartPosition().x && x <= currentBox.getBoxEndPosition().x && y <= currentBox.getBoxStartPosition().y && y >= currentBox.getBoxEndPosition().y) {
-						// La case cliquée est-t-elle vide ? Si oui alors nouvelle selection
-						if(!currentBox.getIsEmpty() && !currentBox.getIsAPossibleMove()) {
-							gameManager_.getBoard().BoxSelected(i);
-							OneStoneIsSelected = true;
-							System.out.print("Selectionné");
-							// On affiche les mouvements possibles
-							gameManager_.getBoard().PossibleMove(i, dice1, dice2, false);
-						}
-						
-						int oldIndex = gameManager_.getBoard().FindIndexBoxSelected();
-						Box oldBox = gameManager_.getBoard().getBoxList().get(oldIndex);
-						// La case cliqué est-il une case où le joueur peut poser sa stone? Si oui alors on change la stone de place
-						if(oldIndex != 0 &&(currentBox.getIsEmpty() || oldBox.getOwner() == currentBox.getOwner()) && currentBox.getIsAPossibleMove()) {
-							System.out.print("Hi");
-							// faire un if
-							gameManager_.getBoard().ChangeStoneFromABoxToAnother(i, oldIndex, oldBox.getOwner());
-							gameManager_.getBoard().DesactiveAllSelected();
-							OneStoneIsSelected = false;
-						}
-					}else {
-						notInBox++;
-					}
+			}
+			// On est dans la partie basse du terrain
+			else 
+			{
+				if(x >= box.getBoxStartPosition().x && x <= box.getBoxEndPosition().x && y <= box.getBoxStartPosition().y && y >= box.getBoxEndPosition().y) 
+				{
+					clickedBox = box.getIndexBox();
 				}
 			}
 		}
-		if(notInBox == BoxNotEmpty) {
-			OneStoneIsSelected = false;
-			gameManager_.getBoard().DesactiveAllSelected();
+		
+		if (clickedBox > 0 && clickedBox < 26)
+		{
+			// Si c'est le premier clique valide du joueur : selection d'un pion
+			if (!OneStoneIsSelected)
+			{
+				if (gameManager_.SelectBox(clickedBox))
+				{
+					OneStoneIsSelected = true;
+				}
+			}
+			else
+			{
+				if (gameManager_.MoveToBox(clickedBox))
+				{
+					OneStoneIsSelected = false;
+				}
+			}
 		}
+		
 		Show();
 	}
 

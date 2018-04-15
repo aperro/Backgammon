@@ -2,18 +2,18 @@ import java.awt.Point;
 
 public class Stone {
 	
-	private static final int stoneWidth = 50;
-	private static final int stoneHeight = 50;
+	private Box box_; // if box = null : stone is eaten
 	
-	private String name;
+	public Stone() {
+	}
 	
-	private Boolean isPlayable_;
-	private Boolean isSelected_;
-	
-	public Stone(String name, Boolean isPlayable, Boolean isSelected) {
-		this.name = name;
-		this.isPlayable_ = isPlayable;
-		this.isSelected_ = isSelected;
+	public Box GetBox() {
+		return box_;
+	}
+
+	public void SetBox(Box box)
+	{
+		this.box_ = box;
 	}
 	
 }
