@@ -30,8 +30,7 @@ public class Board {
 			//..
 			if(j >= 10 && j < 15) {
 				player1.getStoneList().get(j).SetBox(boxList.get(19));
-			}
-			
+			}			
 		}
 
 		// Player 2 position de départ

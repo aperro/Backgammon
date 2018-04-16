@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -6,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -14,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingConstants;
 
 public class Interface extends JFrame implements MouseListener, ActionListener {
 
@@ -23,8 +25,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 	private JLayeredPane lp = new JLayeredPane();
 
-	private JLabel backgroundImage;
-	private JLabel diceImage;
+	private JLabel backgroundImage = new JLabel();;
+	private JLabel diceImage = new JLabel();;
 	private JLabel redStoneLabel = new JLabel();
 	private JLabel whiteStoneLabel = new JLabel();
 	private JLabel redStoneGoalLabel = new JLabel();
@@ -33,6 +35,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 	private JLabel validateBoxLabel = new JLabel();
 	private JLabel validateBoxGoalLabel = new JLabel();
+
+	private JLabel titleLabel = new JLabel("", SwingConstants.CENTER);
 
 	// Les images du bouton et des diffèrentes faces des dés
 	private BufferedImage bg;
@@ -53,12 +57,19 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	private BufferedImage validateBoxTopImage;
 	private BufferedImage validateBoxBotImage;
 	private BufferedImage validateBoxGoalImage;
+	private BufferedImage titleImage;
 
-	private JLabel diceOne;
-	private JLabel diceTwo;
+	private JLabel diceOne = new JLabel();
+	private JLabel diceTwo = new JLabel();
+
+	private JLabel scoreRed = new JLabel("", SwingConstants.CENTER);
+	private JLabel scoreWhite = new JLabel("", SwingConstants.CENTER);
+	private JLabel turnText = new JLabel("", SwingConstants.CENTER);
+	private JLabel noMovePossibleText = new JLabel("", SwingConstants.CENTER);
 
 	//création du bouton
 	JButton rollDice;
+	JButton getIt;
 
 	GameManager gameManager_;
 	private boolean OneStoneIsSelected = false;
@@ -70,7 +81,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	public Interface() {
 		//Display the window.
 		this.setVisible(true);
-		this.setSize(1100, 970);
+		this.setSize(1350, 970);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Backgammon");
 		addMouseListener(this);
@@ -98,6 +109,8 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 		URL urlSelectedBoxBot = getClass().getResource("ValidateBoxBot.png");
 		URL urlSelectedBoxGoal = getClass().getResource("ValidateBoxGoal.png");
 
+		URL urlTitle = getClass().getResource("Title.png");
+
 		//Initialize image for bg and dice
 		File fileBackground = new File(urlBackground.getPath());
 		bg = null;
@@ -120,6 +133,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 		ImageIcon water = new ImageIcon(urlDiceImage.getPath());
 		rollDice = new JButton(water);
+		getIt = new JButton("COMPRIS !");
 
 		File fileDice_1 = new File(urlDice_1.getPath());
 		dice_1 = null;
@@ -251,6 +265,15 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			e.printStackTrace();
 		}
 
+		File title = new File(urlTitle.getPath());
+		titleImage = null;
+		try {
+			titleImage = ImageIO.read(title);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		Show();
 
 		//Ajout de l'action listener
@@ -264,7 +287,16 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 				Show();
 			}
 		});
-
+		
+		getIt.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				gameManager_.setDiceLaunched(false);
+				Show();
+			}
+		});
 	}
 
 	// Show all food
@@ -272,13 +304,53 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	{
 		lp.removeAll();
 		// Background
-		backgroundImage = new JLabel(new ImageIcon(bg));
+		backgroundImage.setIcon(new ImageIcon(bg));
 		backgroundImage.setBounds(0, 0, width, heigth);
 		lp.add(backgroundImage, new Integer(1));
+
+		scoreRed.setFont(new Font("Verdana",Font.BOLD,16));
+		scoreRed.setText("Rouge : " + gameManager_.getPlayer1().getScore() + "/3");
+		scoreRed.setBounds(1080, 200, 250, 230);
+		lp.add(scoreRed, new Integer(1));
+
+		scoreWhite.setFont(new Font("Verdana",Font.BOLD,16));
+		scoreWhite.setText("Blanc : " + gameManager_.getPlayer2().getScore() + "/3");
+		scoreWhite.setBounds(1080, 250, 250, 230);
+		lp.add(scoreWhite, new Integer(1));
+
+		titleLabel.setIcon(new ImageIcon(titleImage));
+		titleLabel.setBounds(1080, 50, 250, 230);
+		lp.add(titleLabel, new Integer(1));
+
+		if(gameManager_.getPlayer1().isPlaying())
+		{
+			turnText.setText("TOUR DES ROUGES !");
+			turnText.setForeground(Color.RED);
+		}
+		
+		if(gameManager_.getPlayer2().isPlaying())
+		{
+			turnText.setText("TOUR DES BLANCS !");
+			turnText.setForeground(Color.GRAY);
+		}
+
+		turnText.setFont(new Font("Verdana",Font.BOLD,18));
+		turnText.setBounds(1080, 550, 250, 150);
+		lp.add(turnText, new Integer(1));
+		
+		if(!gameManager_.canPlay())
+		{
+			noMovePossibleText.setText(gameManager_.getDiceOne().Value() + " & " + gameManager_.getDiceTwo().Value() + " : DÉPLACEMENT IMPOSSIBLE");
+			noMovePossibleText.setFont(new Font("Verdana",Font.BOLD,11));
+			gameManager_.setCanPlay(true);
+			noMovePossibleText.setBounds(1080, 650, 250, 150);
+			lp.add(noMovePossibleText, new Integer(1));
+		} 
+		
 		// Si on a lancé les dés, on affiche le résultat, sinon on affiche le bouton de lancement des dés
 		if (!gameManager_.isDiceLaunched())
 		{	
-			rollDice.setBounds(705, 405, 130, 130);
+			rollDice.setBounds(1100, 400, 200, 118);
 			lp.add(rollDice, new Integer(2));
 		} else
 		{
@@ -286,22 +358,22 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			switch (gameManager_.getDiceOne().Value())
 			{
 			case 1:
-				diceOne = new JLabel(new ImageIcon(dice_1));
+				diceOne.setIcon(new ImageIcon(dice_1));
 				break;
 			case 2:
-				diceOne = new JLabel(new ImageIcon(dice_2));
+				diceOne.setIcon(new ImageIcon(dice_2));
 				break;
 			case 3:
-				diceOne = new JLabel(new ImageIcon(dice_3));
+				diceOne.setIcon(new ImageIcon(dice_3));
 				break;
 			case 4:
-				diceOne = new JLabel(new ImageIcon(dice_4));
+				diceOne.setIcon(new ImageIcon(dice_4));
 				break;
 			case 5:
-				diceOne = new JLabel(new ImageIcon(dice_5));
+				diceOne.setIcon(new ImageIcon(dice_5));
 				break;
 			case 6:
-				diceOne = new JLabel(new ImageIcon(dice_6));
+				diceOne.setIcon(new ImageIcon(dice_6));
 				break;
 			default:
 				break;
@@ -311,34 +383,43 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 			switch (gameManager_.getDiceTwo().Value())
 			{
 			case 1:
-				diceTwo = new JLabel(new ImageIcon(dice_1));
+				diceTwo.setIcon(new ImageIcon(dice_1));
 				break;
 			case 2:
-				diceTwo = new JLabel(new ImageIcon(dice_2));
+				diceTwo.setIcon(new ImageIcon(dice_2));
 				break;
 			case 3:
-				diceTwo = new JLabel(new ImageIcon(dice_3));
+				diceTwo.setIcon(new ImageIcon(dice_3));
 				break;
 			case 4:
-				diceTwo = new JLabel(new ImageIcon(dice_4));
+				diceTwo.setIcon(new ImageIcon(dice_4));
 				break;
 			case 5:
-				diceTwo = new JLabel(new ImageIcon(dice_5));
+				diceTwo.setIcon(new ImageIcon(dice_5));
 				break;
 			case 6:
-				diceTwo = new JLabel(new ImageIcon(dice_6));
+				diceTwo.setIcon(new ImageIcon(dice_6));
 				break;
 			default:
 				break;
 			}
 
-			diceOne.setBounds(130, 415, 100, 100);
-			diceTwo.setBounds(280, 415, 100, 100);
+			diceOne.setBounds(130, 415, 120, 120);
+			diceTwo.setBounds(280, 415, 120, 120);
 			if (gameManager_.getDiceOne().getRemainingUse() > 0)
 				lp.add(diceOne, new Integer(2));
 			if (gameManager_.getDiceTwo().getRemainingUse() > 0)
 				lp.add(diceTwo, new Integer(2));
 		}
+		/*
+		if(!gameManager_.canPlay()) {
+			getIt.setEnabled(true);
+		}else {
+			getIt.setEnabled(false);
+		}
+		
+		getIt.setBounds(1100, 750, 200, 50);
+		lp.add(getIt, new Integer(2));*/
 
 		// Créer les stones
 		ShowStones();
@@ -351,10 +432,6 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 	}
 
 	private void ShowStones() {
-		// TODO Auto-generated method stub
-
-		//redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
-		//whiteStoneLabel = new JLabel(new ImageIcon(whiteStoneImage));
 
 		for(Box currentBox : gameManager_.getBoard().getBoxList()){
 			if(!currentBox.isEmpty()) {
@@ -365,7 +442,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						JLabel redStoneLabel = new JLabel(new ImageIcon(redStoneImage));
 						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
-							redStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
+							redStoneLabel.setIcon(new ImageIcon(stoneSelectedImage));
 						}
 						if(currentBox.getIsTop()) {
 							redStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
@@ -391,9 +468,9 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 						// Si la case est actuellement selectionnée par le joueur alors afficher une pièce verte
 						System.out.println(gameManager_.getBoard().GetSelectedBox());
 						if(j == currentBox.getStonesInside().size() - 1 && currentBox.getIndexBox() == gameManager_.getBoard().GetSelectedBox()) {
-							whiteStoneLabel = new JLabel(new ImageIcon(stoneSelectedImage));
+							whiteStoneLabel.setIcon(new ImageIcon(stoneSelectedImage));
 						}
-						
+
 						if(currentBox.getIsTop()) {
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 40*j, 50, 50);
 						}else {
@@ -407,7 +484,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 
 						if (currentBox.getIndexBox() == 27) // player 2 prison
 							whiteStoneLabel.setBounds(currentBox.getBoxStartPosition().x, currentBox.getBoxStartPosition().y + 45*j, 50, 50);
-						
+
 						lp.add(whiteStoneLabel, new Integer(2));
 					}
 				}
@@ -500,7 +577,7 @@ public class Interface extends JFrame implements MouseListener, ActionListener {
 				}
 			}
 		}
-		
+
 		// NOT FINISHED (Permet de désactiver les box vertes, il manque désactiver la stone selectionné
 		if(clickedBox == -1) {
 			gameManager_.getBoard().DesactiveAllPossibleMove();

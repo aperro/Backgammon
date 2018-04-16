@@ -5,10 +5,13 @@ public class Player {
 
 	private String name;
 	private boolean isPlaying = false;
+	private int score;
 	
 	private List<Stone> stoneList = new ArrayList<Stone>();
+	
 	public Player(String name) {
-		this.setName(name);
+		this.name = name;
+		this.score = 0;
 		for(int i = 0; i < 15; i++) {
 			stoneList.add(new Stone());
 		}
@@ -57,6 +60,14 @@ public class Player {
 
 	public void setPlaying(boolean isPlaying) {
 		this.isPlaying = isPlaying;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void addToScore(int score) {
+		this.score += score;
 	}	
 	
 }

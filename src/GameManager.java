@@ -1,3 +1,4 @@
+import javax.swing.JOptionPane;
 
 public class GameManager {
 
@@ -8,6 +9,7 @@ public class GameManager {
 	private Player player1, player2;
 	private Board board;
 	private boolean diceLaunched = false;
+	private boolean canPlay = true;
 	
 	public GameManager() {
 		player1 = new Player("Rouge");
@@ -19,6 +21,7 @@ public class GameManager {
 		FillBox();
 		
 		player1.setPlaying(true);
+		player2.setPlaying(false);
 	}
 	
 	public void RollDices() {
@@ -39,7 +42,6 @@ public class GameManager {
 		
 		if (!IsAllowedToPlay())
 		{
-			
 			EndOfTurn();
 		}
 	}
@@ -54,6 +56,7 @@ public class GameManager {
 				if (board.NumberOfPossibleMoves(1, 6) == 0)
 				{
 					System.out.println("Pas de coup possible pour le prisonnier");
+					canPlay = false;
 					return false;
 				}
 			} else
@@ -61,6 +64,7 @@ public class GameManager {
 				if (CheckAllBoardMove(player1) == 0)
 				{
 					System.out.println("Pas de coup possible");
+					canPlay = false;
 					return false;
 				}
 			}
@@ -72,6 +76,7 @@ public class GameManager {
 				if (board.NumberOfPossibleMoves(19, 24) == 0)
 				{
 					System.out.println("Pas de coup possible pour le prisonnier");
+					canPlay = false;
 					return false;
 				}
 			} else
@@ -79,6 +84,7 @@ public class GameManager {
 				if (CheckAllBoardMove(player2) == 0)
 				{
 					System.out.println("Pas de coup possible");
+					canPlay = false;
 					return false;
 				}
 			}
@@ -553,10 +559,78 @@ public class GameManager {
 	
 	public void EndOfTurn()
 	{
+		boolean endOfGame = true;
+		for (Stone stone : GetPlaying().getStoneList())
+		{
+			if (stone.GetBox().getIndexBox() != 0 && stone.GetBox().getIndexBox() != 25)
+			{
+				endOfGame = false;
+				break;
+			}
+		}
+		if (endOfGame)
+		{
+			EndOfGame();
+			return;
+		}
+		player1.setPlaying(!player1.isPlaying());
+		player2.setPlaying(!player2.isPlaying());
+		
+		diceLaunched = false;
+	}	
+	
+	public void EndOfGame()
+	{
+		GetPlaying().addToScore(GetResult());
 		player1.setPlaying(!player1.isPlaying());
 		player2.setPlaying(!player2.isPlaying());
 		diceLaunched = false;
-	}	
+		board.getBoxList().clear();
+		board = new Board(player1, player2);
+		FillBox();
+		
+		if (player1.getScore() >= 3)
+		{
+			System.out.println("Red wins ! ");
+			JOptionPane winner = new JOptionPane();
+			winner.showConfirmDialog(null, "Rouge gagne la partie ! Félicitations", "Rouge gagne !", JOptionPane.INFORMATION_MESSAGE);
+			
+		} else
+		{
+			if (player2.getScore() >= 3)
+			{
+				System.out.println("White wins ! ");
+				JOptionPane winner = new JOptionPane();
+				winner.showConfirmDialog(null, "Blanc gagne la partie ! Félicitations", "Blanc gagne !", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	}
+	
+	private int GetResult()
+	{
+		int score = 1;
+		if (GetPlaying().equals(player1)) // player1 wins
+		{
+			for (Stone stone : player2.getStoneList())
+			{
+				if (stone.GetBox().getIndexBox() < 19 && stone.GetBox().getIndexBox() > 6)
+					score = Math.max(score, 2);
+				if (stone.GetBox().getIndexBox() > 19)
+					score = 3;
+			}
+			return score;
+		} else								// player2 wins
+		{
+			for (Stone stone : player1.getStoneList())
+			{
+				if (stone.GetBox().getIndexBox() < 19 && stone.GetBox().getIndexBox() > 6)
+					score = Math.max(score, 2);
+				if (stone.GetBox().getIndexBox() < 6 || stone.GetBox().getIndexBox() == 26)
+					score = 3;
+			}
+			return score;
+		}
+	}
 	
 	public boolean isDiceLaunched() {
 		return diceLaunched;
@@ -604,6 +678,14 @@ public class GameManager {
 
 	public void setPlayer2(Player player2) {
 		this.player2 = player2;
+	}
+
+	public boolean canPlay() {
+		return canPlay;
+	}
+
+	public void setCanPlay(boolean canPlay) {
+		this.canPlay = canPlay;
 	}
 
 
