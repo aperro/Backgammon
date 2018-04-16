@@ -1,0 +1,41 @@
+L'équipe:
+Adrien PERRAUD - PERA100895
+Louis BERGER - BERL07109507
+
+Participants:
+  - Dans notre jeu, deux personnes peuvent s'affronter sur le même ordinateur à tour de rôle.
+  - Chaque joueur possède une couleur: Rouge ou Blanc.
+  - Quand le tour d'un joueur commence, notre jeu le lui dira.
+
+Déroulement d'une partie:
+  - Le joueur rouge commence la partie.
+  - Le joueur appuie sur le bouton à droite de l'écran pour lancer les dés.
+  - Le résultat des dés s'affiche sur l'écran et le joueur peut sélectionner un pion de sa couleur en cliquant sur la case qu'il veut. 
+    Celui-ci devient vert si et seulement ci il possède au moins un pion à lui sur cette case.
+  - Il peut changer de pion en re-cliquant sur ce même pion et en en cliquant sur un autre.
+  - Si un mouvement est possible alors le(s) case(s) s'allume(nt) en vert sinon rien ne s'allume.
+  - Le joueur peut bouger son pion et cliquant sur une case devenu vert.
+  - Le premier mouvement effectué correspond à la valeur du dés. Une fois le mouvement fait le premier dé disparait.
+  - Le joueur bouge un autre pion ou bien le même d'une quantité de mouvement égal au dé numéro 2.
+  - Une fois le déplacement effectué le deuxième dé disparait à son tour.
+  - Le tour du joueur est terminé et le bouton de dés ré apparait. 
+  - Le joueur suivant peut jouer.
+  
+  - La partie s'arrête quand un joueur a rentré tous ses pions dans son but.
+  - Un système de scoring a été implenté. Chaque joueur gagne:
+          - 1 point si il gagne alors que l'autre joueur possède tous ces pions dans le dernier quart de terrain lui appartenant.
+          - 2 points si il gagne alors que l'autre joueur possède tous ces pions répartis sur tout le terrain.
+          - 3 points si il gagne alors que l'autre joueur possède un pion dans sa zone de départ.
+          
+   PS : Pour tout les reglès de victoire et de scoring du backgammon consulter la vidéo suivante : https://www.youtube.com/watch?v=Eaa7KrIc4ys
+          
+  Cas spéciaux: 
+     - Si le joueur fait un double en lancant ses dés alors il peut se déplacer de 4 fois de la valeur indiqué sur les deux dés.
+               Lorsque le joueur a effectué deux fois le mouvement le premier dé disparait.
+               Il lui reste alors deux mouvements et une fois ceux-ci réalisés le deuxième dé disparait et le tour du joueur est terminé.
+     - Un joueur peut poser un pion à lui par dessus un pion de l'adverse qui se trovue seul sur une case. 
+       Si il réussit ce mouvement, le pion de l'adversaire devient "prisonnier".
+     - Aucun joueur ne peut jouer si un pion est en prison, il doit en priorité sortir de prison.
+     - Si aucun mouvement n'est possible pour un joueur alors un message indiquant le score fait lui est présenté.
+       Ce message indique clairement que le joueur ne pouvait pas se déplacer avec le score effectué par son lancé de dés.
+     
