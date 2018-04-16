@@ -1,6 +1,6 @@
 L'équipe:
-Adrien PERRAUD - PERA100895
 Louis BERGER - BERL07109507
+Adrien PERRAUD - PERA100895
 
 Participants:
   - Dans notre jeu, deux personnes peuvent s'affronter sur le même ordinateur à tour de rôle.
@@ -11,10 +11,11 @@ Déroulement d'une partie:
   - Le joueur rouge commence la partie.
   - Le joueur appuie sur le bouton à droite de l'écran pour lancer les dés.
   - Le résultat des dés s'affiche sur l'écran et le joueur peut sélectionner un pion de sa couleur en cliquant sur la case qu'il veut. 
-    Celui-ci devient vert si et seulement ci il possède au moins un pion à lui sur cette case.
-  - Il peut changer de pion en re-cliquant sur ce même pion et en en cliquant sur un autre.
+    Celui-ci devient vert si et seulement si il possède au moins un pion à lui sur cette case.
+  - Il peut changer de pion en re-cliquant sur ce même pion et en en cliquant sur un autre. 
+    En d'autres termes un pion selectionné le reste sauf si le joeur clique de nouveau dessus.
   - Si un mouvement est possible alors le(s) case(s) s'allume(nt) en vert sinon rien ne s'allume.
-  - Le joueur peut bouger son pion et cliquant sur une case devenu vert.
+  - Le joueur peut bouger son pion et cliquant sur une case devenu verte.
   - Le premier mouvement effectué correspond à la valeur du dés. Une fois le mouvement fait le premier dé disparait.
   - Le joueur bouge un autre pion ou bien le même d'une quantité de mouvement égal au dé numéro 2.
   - Une fois le déplacement effectué le deuxième dé disparait à son tour.
